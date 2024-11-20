@@ -1,28 +1,33 @@
+import { io } from 'socket.io-client';
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2'; // Use Line if needed
+import { Line } from 'react-chartjs-2'; // Use Line component for line chart
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 
-// Register the necessary components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// Register the necessary components for Line chart
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const BarChart = () => {
+const LineChart = () => {
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
       {
         label: 'Temperature',
         data: [],
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal
-        borderColor: 'rgba(75, 192, 192, 1)',       // Darker teal
-        borderWidth: 1,
+        borderColor: 'rgba(75, 192, 192, 1)', // Line color (teal)
+        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal for the area under the line
+        borderWidth: 2,
+        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Point color
+        fill: true, // Fill under the line
+        tension: 0.4, // Smooth the line (smooth curve)
       },
     ],
   });
@@ -45,9 +50,12 @@ const BarChart = () => {
           {
             label: 'Temperature',
             data,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal
-            borderColor: 'rgba(75, 192, 192, 1)',       // Darker teal
-            borderWidth: 1,
+            borderColor: 'rgba(75, 192, 192, 1)', // Line color
+            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal fill
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Point color
+            fill: true, // Fill area under the line
+            tension: 0.4, // Smooth line
           },
         ],
       });
@@ -67,8 +75,8 @@ const BarChart = () => {
       const newData = newTemperature.temperature;
 
       setChartData((prevData) => {
-        const updatedLabels = [...prevData.labels, newLabel]; // Append to the end
-        const updatedData = [...prevData.datasets[0].data, newData]; // Append to the end
+        const updatedLabels = [...prevData.labels, newLabel]; // Append new label to the end
+        const updatedData = [...prevData.datasets[0].data, newData]; // Append new data to the end
 
         // Keep only the last 10 entries
         if (updatedLabels.length > 10) {
@@ -96,7 +104,7 @@ const BarChart = () => {
     };
   }, []);
 
-  return <Bar data={chartData} />;
+  return <Line data={chartData} />;
 };
 
-export default BarChart;
+export default LineChart;
