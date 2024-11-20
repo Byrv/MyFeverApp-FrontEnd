@@ -1,0 +1,80 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the items vertically */
+  align-items: left;     /* Centers the items horizontally */
+  height: 100vh;
+  padding: 10px;           /* Make the container take full height of the screen */
+}
+.main {
+  display: flex;
+  flex-direction: column;      /* Stack the components vertically */
+  justify-content: flex-start; /* Align items at the top */
+  align-items: center;         /* Center items horizontally */
+  gap: 20px;                   /* Add small gap between the components */
+  width: 100%;                 /* Ensure the container is full width */
+  padding: 0 20px;             /* Optional: Adds padding on the sides for spacing */
+  box-sizing: border-box;      /* Ensure padding doesn't cause overflow */
+}
+
+/* .bar - the container for the BarChart */
+.bar {
+  width: 100%;         /* Ensure the chart takes up full container width */
+  height: 60vh;        /* Set height to 60% of the viewport height */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;      /* Stack the components vertically */
+  justify-content: flex-start; /* Align items at the top */
+  align-items: center; 
+}
+
+.submit {
+  width: 100%;         /* Ensure Submit takes full width */
+  padding: 10px;
+}
+
+/* Style for the h1 tag */
+h1 {
+  font-family: 'Poppins', sans-serif;  /* Use Poppins font */
+  font-weight: 500;                   /* Slightly thicker font weight (300) */
+  text-align: center;                 /* Center the text */
+  color: #FF69B4;                     /* Pink color */
+  font-size: 3rem;                    /* Increase font size */
+  letter-spacing: 1px;                /* Add space between letters */
+  margin: 20px 0;                     /* Add margin for spacing */
+  padding: 10px 0;                    /* Add padding for spacing */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+/* Optional hover effect */
+h1:hover {
+  color: #FF1493;  /* Darker pink on hover */
+  transform: scale(1.05);  /* Slight zoom effect on hover */
+  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out; /* Smooth transition */
+}
+
+/* Media Query for screens between 768px and 1024px */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 2.5rem;  /* Slightly smaller font size */
+    margin: 15px 0;      /* Reduced margin */
+  }
+}
+
+/* Media Query for screens between 480px and 767px */
+@media (max-width: 767px) {
+  h1 {
+    font-size: 2rem;    /* Smaller font size */
+    margin: 10px 0;      /* Reduced margin */
+    letter-spacing: 0.5px; /* Slightly reduced letter spacing */
+  }
+}
+
+/* Media Query for screens smaller than 480px */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;  /* Smaller font size for mobile */
+    margin: 8px 0;      /* Reduced margin for small screens */
+    letter-spacing: 0px; /* Remove letter spacing */
+  }
+}
