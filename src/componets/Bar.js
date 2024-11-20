@@ -1,6 +1,6 @@
-import { io } from 'socket.io-client';
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2'; // Use Line component for line chart
+import { Line } from 'react-chartjs-2'; // Import Line chart component
+import { io } from 'socket.io-client'; // Import socket.io-client
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register the necessary components for Line chart
+// Register necessary Chart.js modules for Line chart
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const LineChart = () => {
@@ -22,16 +22,18 @@ const LineChart = () => {
       {
         label: 'Temperature',
         data: [],
-        borderColor: 'rgba(75, 192, 192, 1)', // Line color (teal)
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal for the area under the line
+        borderColor: 'rgba(255, 105, 180, 1)', // Pink Line Color
+        backgroundColor: 'rgba(255, 105, 180, 0.2)', // Light Pink Fill under Line
         borderWidth: 2,
-        pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Point color
-        fill: true, // Fill under the line
-        tension: 0.4, // Smooth the line (smooth curve)
+        tension: 0.4, // Smooth curve
+        pointBackgroundColor: 'rgba(255, 105, 180, 1)', // Point color
       },
     ],
   });
 
+  const socket = io('https://myfeverapp.onrender.com/'); // Connect to the WebSocket server
+
+  // Fetch initial temperature data
   const fetchTemperatureData = async () => {
     try {
       const response = await fetch('https://myfeverapp.onrender.com/api/temperature/recent');
@@ -50,12 +52,11 @@ const LineChart = () => {
           {
             label: 'Temperature',
             data,
-            borderColor: 'rgba(75, 192, 192, 1)', // Line color
-            backgroundColor: 'rgba(75, 192, 192, 0.2)', // Light teal fill
+            borderColor: 'rgba(255, 105, 180, 1)', // Pink Line Color
+            backgroundColor: 'rgba(255, 105, 180, 0.2)', // Light Pink Fill under Line
             borderWidth: 2,
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)', // Point color
-            fill: true, // Fill area under the line
-            tension: 0.4, // Smooth line
+            tension: 0.4, // Smooth curve
+            pointBackgroundColor: 'rgba(255, 105, 180, 1)', // Point color
           },
         ],
       });
@@ -64,47 +65,68 @@ const LineChart = () => {
     }
   };
 
+  // Listen for new temperature data from the server
   useEffect(() => {
-    const socket = io('https://myfeverapp.onrender.com/');
-
-    // Listen for new data
     socket.on('newTemperature', (newTemperature) => {
+      // Update chart data when new temperature is received
       const newLabel = new Date(newTemperature.recordedAt).toLocaleString('en-US', {
         hour: '2-digit', minute: '2-digit', hour12: true, day: '2-digit', month: 'short',
       });
       const newData = newTemperature.temperature;
 
       setChartData((prevData) => {
-        const updatedLabels = [...prevData.labels, newLabel]; // Append new label to the end
-        const updatedData = [...prevData.datasets[0].data, newData]; // Append new data to the end
+        const updatedLabels = [newLabel, ...prevData.labels];
+        const updatedData = [newData, ...prevData.datasets[0].data];
 
         // Keep only the last 10 entries
         if (updatedLabels.length > 10) {
-          updatedLabels.shift();
-          updatedData.shift();
+          updatedLabels.pop();
+          updatedData.pop();
         }
 
         return {
           labels: updatedLabels,
           datasets: [
             {
-              ...prevData.datasets[0],
+              label: 'Temperature',
               data: updatedData,
+              borderColor: 'rgba(255, 105, 180, 1)', // Pink Line Color
+              backgroundColor: 'rgba(255, 105, 180, 0.2)', // Light Pink Fill under Line
+              borderWidth: 2,
+              tension: 0.4, // Smooth curve
+              pointBackgroundColor: 'rgba(255, 105, 180, 1)', // Point color
             },
           ],
         };
       });
     });
 
-    // Fetch initial data
+    // Initial data fetch
     fetchTemperatureData();
 
     return () => {
-      socket.off('newTemperature'); // Cleanup socket listener on unmount
+      socket.off('newTemperature'); // Clean up listener on unmount
     };
   }, []);
 
-  return <Line data={chartData} />;
+  return (
+    <Line
+      data={chartData}
+      options={{
+        scales: {
+          y: {
+            beginAtZero: true, // Set Y axis to start at zero
+            ticks: {
+              // Customize Y-axis ticks if needed
+            },
+          },
+          x: {
+            type: 'category', // Use category scale for X-axis (labels are categorical)
+          },
+        },
+      }}
+    />
+  );
 };
 
 export default LineChart;
